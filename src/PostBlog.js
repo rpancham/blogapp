@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+
+
+import React, { useEffect, useState } from 'react';
 import { ActionGroup, Button, Form, FormGroup, TextInput } from '@patternfly/react-core';
 import { Grid, GridItem } from '@patternfly/react-core';
 import axios from "axios";
 
-export function PostBlog() {
+export function PostBlog({ onPost }) {
 
-    const [formState, setFormState] = useState({ author: "", name: "" });
+    const [formState, setFormState] = useState({ title: "", name: "" });
 
-    function authorchanged(value) {
-        setFormState({ ...formState, author: value })
+    function titlechanged(value) {
+        setFormState({ ...formState, title: value })
     }
 
     function contentchanged(value) {
@@ -17,8 +19,8 @@ export function PostBlog() {
 
     function submitForm() {
         axios.post('http://localhost:8080/Blogs/blog', formState).then(function (response) {
-            // handle success
-            console.log(response.data);
+            onPost(true);
+
         }).catch(function (error) {
             // handle error
             console.log(error);
@@ -26,7 +28,6 @@ export function PostBlog() {
             .then(function () {
                 // always executed
             });
-
     }
 
     return (
@@ -35,15 +36,15 @@ export function PostBlog() {
                 <GridItem span={8}> <h1>Post Blog</h1>
                     <Form>
                         <FormGroup
-                            label="Author"
+                            label="title"
                             type="text"
                             // helperText={helperText}
-                            fieldId="author"
+                            fieldId="title"
                         >
                             <TextInput
                                 // value={value}
-                                id="author"
-                                onChange={authorchanged}
+                                id="title"
+                                onChange={titlechanged}
                             />
                         </FormGroup>
                         <FormGroup
@@ -58,6 +59,20 @@ export function PostBlog() {
                                 onChange={contentchanged}
                             // onChange={this.handleTextInputChange}
                             />
+                        </FormGroup>
+                        <FormGroup
+                            label="content"
+                            type="text"
+                            // helperText={helperText}
+                            fieldId="content"
+                        >
+                            <TextInput
+                                // value={value}
+                                id="content"
+                                onChange={contentchanged}
+                            />
+
+
                             <ActionGroup>
                                 <Button variant="primary" onClick={submitForm}>Submit</Button>
                             </ActionGroup>
